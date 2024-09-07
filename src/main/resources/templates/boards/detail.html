@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/header.html :: head" />
+<body>
+<div th:replace="fragments/header.html :: header (${category})"/>
+<div class="row">
+    <div class="offset-3 col-6">
+        <div class="form-group">
+            <div style="float: right;" align="right">
+                <div th:text="'작성일 : ' + ${#temporals.format(boardDto.createdAt, 'yy/MM/dd HH:mm')}"></div>
+                <br/>
+            </div>
+            <div th:text="'작성자 : ' + ${boardDto.userNickname}" style="font-size: large"></div>
+            <br/>
+            <div>
+                <label th:for="title" style="font-size: large">제목 : </label>
+                <input type="text" th:value="${boardDto.title}" style="width: 50%" readonly>
+            </div>
+            <br/>
+            <div>
+                <label th:for="body" style="font-size: large">내용 : </label>
+                <textarea rows="10" style="width: 100%;" th:text="${boardDto.body}" readonly></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

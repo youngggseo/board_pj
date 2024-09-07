@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header.html :: head" />
+<body>
+<div th:replace="fragments/header.html :: header (${category})"/>
+<div class="row" style=" margin-bottom: 30px">
+    <div class="offset-1 col-2">
+        <h5 style="height: 40px; display: flex; align-items: center; margin: 0px; justify-content: right">전체: [[${boards.getTotalElements()}]]개</h5>
+    </div>
+    <div class="col-1" align="right">
+        <button class="btn post-btn" type="button"
+                th:onclick="|location.href='@{/boards/{category}/write (category=${category})}'|">글 작성</button>
+    </div>
+</div>
+<div class="row">
+    <div class="offset-2 col-8">
+        <table class="table list-table table-hover text-center">
+            <thead style="background-color: #A5F1E9">
+            <tr>
+                <th style="width: 20%">작성자</th>
+                <th style="width: 45%">제목</th>
+                <th style="width: 15%">작성일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board: ${boards}"
+                th:onclick="|location.href='@{/boards/{category}/{boardId} (category=${category}, boardId=${board.id})}'|">
+                <td style="width: 20%" th:text="${board.user.nickname}"/>
+                <td style="width: 45%" th:text="${board.title}"/>
+                <td style="width: 15%" th:text="${#temporals.format(board.createdAt, 'yy/MM/dd HH:mm')}"/>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <ul id="paging-ul" class="pagination justify-content-center"></ul>
+</div>
+<script th:inline="javascript">
+    window.onload = function () {
+        let nowPage = [[${boards.getNumber()}]] + 1;    // 현재 페이지
+        let totalPage = [[${boards.getTotalPages()}]];  // 전체 페이지 수
+
+        let firstPage;  // 화면에 출력될 첫 페이지
+        for (let i = nowPage ; i >= 1 ; i --) {
+            if(i % 5 == 1) {
+                firstPage = i;
+                break;
+            }
+        }
+
+        let lastPage;   // 화면에 출력될 마지막 페이지
+        let nextButton; // 다음 버튼 출력 여부
+        if (firstPage + 4 >= totalPage) {
+            lastPage = totalPage;
+            nextButton = false;
+        } else {
+            lastPage = firstPage + 4;
+            nextButton = true;
+        }
+
+        // HTML 생성
+        let pageHtml = "";
+        pageHtml += "<li><a class='page-link' href='" + makeUrl(1) +  "'>&laquo;</a></li>";
+        if (firstPage != 1) {
+            pageHtml += "<li><a class='page-link' href='" + makeUrl(firstPage - 1) +  "'>&lsaquo;</a></li>";
+        }
+
+        for (let i = firstPage; i <= lastPage; i++) {
+            if (i == nowPage) {
+                pageHtml += "<li class='page-item active'><a class= 'page-link'>" + i + "</a></li>";
+            } else {
+                pageHtml += "<li class='page-item'><a class= 'page-link' href='" + makeUrl(i) + "'>" + i + "</a></li>";
+            }
+        }
+
+        if (nextButton) {
+            pageHtml += "<li><a class='page-link' href='" + makeUrl(lastPage + 1) +  "'>&rsaquo;</a></li>";
+        }
+        pageHtml += "<li><a class='page-link' href='" + makeUrl(totalPage) +  "'>&raquo;</a></li>";
+
+        $("#paging-ul").html(pageHtml);
+    }
+
+    function makeUrl(page) {
+        let category = [[${category}]];
+        return "/boards/" + category + "?page=" + page;
+    }
+</script>
+</body>
+</html>
