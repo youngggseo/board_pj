@@ -6,9 +6,6 @@
 <div th:replace="fragments/myPageHeader.html :: myPageHeader"/>
 <br/><br/>
 <div class="row">
-    <div class="offset-2 col-1">
-        <h5>전체: []개</h5>
-    </div>
     <div class="col-6" align="center">
         <button th:if="${category == 'board'}" class="btn selected-btn" style="margin: 0px 30px;" onclick="location.href='/users/myPage/board'">작성한 글</button>
         <button th:unless="${category == 'board'}" class="btn select-btn" style="margin: 0px 30px;" onclick="location.href='/users/myPage/board'">작성한 글</button>
